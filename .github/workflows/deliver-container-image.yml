@@ -29,6 +29,13 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v3
 
+      - name: Clean sigstore cache
+        run: |
+          rm -rf $HOME/.sigstore
+          rm -rf $HOME/.cache/fulcio
+          rm -rf $HOME/.cache/rekor
+          rm -rf $HOME/.tuf
+
       # Install the cosign tool except on PR
       # https://github.com/sigstore/cosign-installer
       - name: Install cosign
