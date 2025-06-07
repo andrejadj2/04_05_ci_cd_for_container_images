@@ -74,10 +74,12 @@ jobs:
           cache-to: type=gha,mode=max
           platforms: linux/amd64,linux/arm64
 
-      - name: Clean sigstore and fulcio cache
+      - name: Clean sigstore, fulcio, rekor and tuf cache
         run: |
-          rm -rf ~/.sigstore
-          rm -rf ~/.cache/fulcio
+          rm -rf $HOME/.sigstore
+          rm -rf $HOME/.cache/fulcio
+          rm -rf $HOME/.cache/rekor
+          rm -rf $HOME/.tuf
 
       # Sign the resulting Docker image digest except on PRs.
       # This will only write to the public Rekor transparency log when the Docker
@@ -90,4 +92,4 @@ jobs:
           COSIGN_EXPERIMENTAL: "true"
         # This step uses the identity token to provision an ephemeral certificate
         # against the sigstore community Fulcio instance.
-        run: echo "${{ steps.meta.outputs.tags }}" | xargs -I {} cosign sign {}@${{ steps.build-and-push.outputs.digest }}
+        run: echo "${{ steps.meta.outputs.tags }}" | xargs -I {} cosign sign -v {}@${{ steps.build-and-push.outputs.digest }}
